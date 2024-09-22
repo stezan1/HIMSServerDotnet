@@ -14,14 +14,26 @@ namespace HIMSServer.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            
+            PatientDbContext p = new PatientDbContext();
+            //return all data
+         return new string[] { "value1", "value2" };
+
         }
 
         // GET api/<PatientAPIController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int id)
         {
-            return "value";
+            PatientDbContext p = new PatientDbContext();
+
+            //check if patient exist
+            var patient = p.Patients.Find(id);
+            if (patient == null)
+            {
+                return NotFound();
+            }
+            return Ok(patient);
         }
 
         // POST api/<PatientAPIController>
@@ -44,14 +56,43 @@ namespace HIMSServer.Controllers
 
         // PUT api/<PatientAPIController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] Patient updatedPatient)
         {
+            PatientDbContext p = new PatientDbContext();
+            var patient = p.Patients.Find(id);
+                if (patient == null)
+                {
+                    return NotFound();
+                }
+
+                // updating code to db
+                patient.name = updatedPatient.name;
+                patient.code = updatedPatient.code;
+                patient.age = updatedPatient.age;
+
+                p.SaveChanges();
+            
+
+            return Ok(updatedPatient);
+
         }
 
         // DELETE api/<PatientAPIController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            PatientDbContext p = new PatientDbContext();
+            //check if patient exist
+            var patient =p.Patients.Find(id);
+                if (patient == null)
+                {
+                    return NotFound();
+                }
+                //delete the patient
+                p.Patients.Remove(patient);
+                p.SaveChanges();
+            
+            return Ok(id+" patient id is deleted");
         }
     }
 }

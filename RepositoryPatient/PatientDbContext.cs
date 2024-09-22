@@ -6,6 +6,7 @@ namespace RepositoryPatient
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //configuration
             optionsBuilder.UseSqlServer("Server=CKS2-DESKTOP;Database=Hospital;Trusted_Connection=True;TrustServerCertificate=True;");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
